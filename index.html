@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tetris maybe</title>
+    <style>
+      body {
+        text-align: center;
+      }
+      canvas {
+      }
+    </style>
+  </head>
+  <body>
+    <canvas
+      id="canvas"
+      width="400"
+      height="800"
+      style="border: 1px solid #d3d3d3;"
+    ></canvas>
+    <!-- 22x12 -> 20x10 -->
+    <script>
+      const c = document.getElementById("canvas");
+      const ctx = c.getContext("2d");
+      const width = canvas.width;
+      const height = canvas.height;
+      const arr = []; //game matrix
+      const rows = 10; //game rows
+      const cols = 20; //game columns
+      var gameArray = [];
+      const blockSize = 40;
+
+      const gameBlockSize = 4; // correct?
+
+      const gameBlock = [
+        [1, 1, 0],
+        [0, 1, 0],
+        [0, 1, 0],
+      ];
+
+      function initGameArr() {
+        //fill game matrix array and draw rect to canvas
+        ctx.fillStyle = "grey";
+
+        ctx.fillRect(0, 0, width, height);
+        for (var i = 0; i < cols; i++) {
+          gameArray[i] = [];
+          for (var j = 0; j < rows; j++) {
+            gameArray[i][j] = 0;
+
+            ctx.lineWidth = 0.2;
+
+            ctx.strokeRect(j * blockSize, i * blockSize, blockSize, blockSize);
+          }
+        }
+      }
+      initGameArr();
+      console.log("gameArray", gameArray);
+
+      function clearCanvas() {
+        initGameArr();
+      }
+      class Block {
+        constructor(color, position) {
+          this.color = color;
+          this.position = position;
+        }
+      }
+
+      class Pieces {
+        constructor(color, position) {
+          this.color = color;
+          this.position = position;
+        }
+      }
+
+      var startPosition = [0, 4];
+      var position = [17, 4];
+
+      function spawnBlock() {
+        // random color
+        let block = new Block("blue", startPosition);
+      }
+
+      function updateGame(arr) {
+        console.log("update game");
+        /*  for (var i = 0; i < cols; i++) {
+          for (var j = 0; j < rows; j++) {
+            if (arr[i][j] === 0) {
+              ctx.rect(blockSize * j, blockSize * i, blockSize, blockSize);
+              ctx.fillStyle = "grey";
+              ctx.fill();
+              ctx.lineWidth = 0.2;
+              ctx.strokeStyle = "black";
+              ctx.stroke();
+            } else {
+              ctx.rect(blockSize * j, blockSize * i, blockSize, blockSize);
+              ctx.fillStyle = "blue";
+              ctx.fill();
+              ctx.lineWidth = 0.2;
+              ctx.strokeStyle = "black";
+              ctx.stroke();
+            }
+          }
+        } */
+      }
+      var color = "blue";
+      function drawBlock(x, y, size, color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, size, size);
+      }
+
+      function checkMovePossible(blockPosition) {
+        //console.log("blockPosition", blockPosition);
+        if (blockPosition[0] < cols) {
+          //console.log("true");
+          //console.log("blockPosition,cols", blockPosition, cols);
+          return true;
+        } else {
+          //console.log("false");
+          //console.log("gameArray", gameArray);
+          position = [0, 4];
+          return false;
+        }
+      }
+
+      function updateGame() {
+        //console.log("position", position);
+        if (checkMovePossible(position)) {
+          for (var i = 0; i < cols; i++) {
+            for (var j = 0; j < rows; j++) {
+              if (position[0] === i && position[1] === j) {
+                gameArray[i][j] = 1;
+                drawBlock(
+                  j * blockSize + 1,
+                  i * blockSize + 1,
+                  blockSize - 2,
+                  color
+                );
+              } else {
+                gameArray[i][j] = 0;
+                drawBlock(
+                  j * blockSize + 1,
+                  i * blockSize + 1,
+                  blockSize - 2,
+                  "grey"
+                );
+              }
+            }
+          }
+          position = [position[0] + 1, position[1]];
+        }
+      }
+
+      function gameLoop() {
+        updateGame();
+      }
+      setInterval(() => {
+        gameLoop();
+      }, 2000);
+    </script>
+  </body>
+</html>
