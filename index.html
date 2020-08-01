@@ -24,11 +24,12 @@
     <!-- 20x10 play area blocks -->
     <canvas
       id="canvas"
-      width="350"
-      height="700"
+      width="400"
+      height="800"
       style="border: 0.2px solid grey;"
     ></canvas>
 
+    <!-- TODO make canvas smaller , drawblock dynamic to width &heigth -->
     <script>
       const c = document.getElementById("canvas");
       const ctx = c.getContext("2d");
@@ -567,7 +568,7 @@
             if (p.array[p.currentRotation][i][j] === 1) {
               if (gameArray[p.position[0] + i][p.position[1] + j] !== 0) {
                 p.kill();
-                document.querySelector("#score").innerHTML = ////TODO CONTINUE HERE, this flashes at end, updateScore is run after piece.kill() overwrites this
+                document.querySelector("#score").innerHTML =
                   "GAME OVER! your score: " + score;
                 clearInterval(gameInterval);
                 //console.log("p.position", p.position);
