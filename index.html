@@ -13,152 +13,481 @@
     </style>
   </head>
   <body>
+    <!-- 20x10 play area blocks -->
     <canvas
       id="canvas"
       width="400"
       height="800"
       style="border: 1px solid #d3d3d3;"
     ></canvas>
-    <!-- 22x12 -> 20x10 -->
+
     <script>
-      const c = document.getElementById("canvas");
-      const ctx = c.getContext("2d");
-      const width = canvas.width;
-      const height = canvas.height;
-      const arr = []; //game matrix
-      const rows = 10; //game rows
-      const cols = 20; //game columns
-      var gameArray = [];
-      const blockSize = 40;
+      function game() {
+        const c = document.getElementById("canvas");
+        const ctx = c.getContext("2d");
+        const width = canvas.width;
+        const height = canvas.height;
+        const rows = 10; //game rows
+        const cols = 20; //game columns
+        var gameArray = [];
+        const blockSize = 40;
 
-      const gameBlockSize = 4; // correct?
+        const gameBlockSize = 4; // correct?
 
-      const gameBlock = [
-        [1, 1, 0],
-        [0, 1, 0],
-        [0, 1, 0],
-      ];
+        const startPosition = [0, 3];
 
-      function initGameArr() {
-        //fill game matrix array and draw rect to canvas
-        ctx.fillStyle = "grey";
+        var score = 0;
 
-        ctx.fillRect(0, 0, width, height);
-        for (var i = 0; i < cols; i++) {
-          gameArray[i] = [];
-          for (var j = 0; j < rows; j++) {
-            gameArray[i][j] = 0;
-
-            ctx.lineWidth = 0.2;
-
-            ctx.strokeRect(j * blockSize, i * blockSize, blockSize, blockSize);
-          }
-        }
-      }
-      initGameArr();
-      console.log("gameArray", gameArray);
-
-      function clearCanvas() {
-        initGameArr();
-      }
-      class Block {
-        constructor(color, position) {
-          this.color = color;
-          this.position = position;
-        }
-      }
-
-      class Pieces {
-        constructor(color, position) {
-          this.color = color;
-          this.position = position;
-        }
-      }
-
-      var startPosition = [0, 4];
-      var position = [17, 4];
-
-      function spawnBlock() {
-        // random color
-        let block = new Block("blue", startPosition);
-      }
-
-      function updateGame(arr) {
-        console.log("update game");
-        /*  for (var i = 0; i < cols; i++) {
-          for (var j = 0; j < rows; j++) {
-            if (arr[i][j] === 0) {
-              ctx.rect(blockSize * j, blockSize * i, blockSize, blockSize);
-              ctx.fillStyle = "grey";
-              ctx.fill();
+        function initGameArr() {
+          //fill game matrix array and draw rect to canvas
+          ctx.fillStyle = "grey";
+          ctx.fillRect(0, 0, width, height);
+          for (var i = 0; i < cols; i++) {
+            gameArray[i] = [];
+            for (var j = 0; j < rows; j++) {
+              gameArray[i][j] = 0;
               ctx.lineWidth = 0.2;
-              ctx.strokeStyle = "black";
-              ctx.stroke();
-            } else {
-              ctx.rect(blockSize * j, blockSize * i, blockSize, blockSize);
-              ctx.fillStyle = "blue";
-              ctx.fill();
-              ctx.lineWidth = 0.2;
-              ctx.strokeStyle = "black";
-              ctx.stroke();
+              ctx.strokeRect(
+                j * blockSize,
+                i * blockSize,
+                blockSize,
+                blockSize
+              );
             }
           }
-        } */
-      }
-      var color = "blue";
-      function drawBlock(x, y, size, color) {
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, size, size);
-      }
-
-      function checkMovePossible(blockPosition) {
-        //console.log("blockPosition", blockPosition);
-        if (blockPosition[0] < cols) {
-          //console.log("true");
-          //console.log("blockPosition,cols", blockPosition, cols);
-          return true;
-        } else {
-          //console.log("false");
-          //console.log("gameArray", gameArray);
-          position = [0, 4];
-          return false;
         }
-      }
+        initGameArr();
 
-      function updateGame() {
-        //console.log("position", position);
-        if (checkMovePossible(position)) {
+        function clearBoard() {
+          //initGameArr();
           for (var i = 0; i < cols; i++) {
             for (var j = 0; j < rows; j++) {
-              if (position[0] === i && position[1] === j) {
-                gameArray[i][j] = 1;
-                drawBlock(
-                  j * blockSize + 1,
-                  i * blockSize + 1,
-                  blockSize - 2,
-                  color
-                );
-              } else {
-                gameArray[i][j] = 0;
-                drawBlock(
-                  j * blockSize + 1,
-                  i * blockSize + 1,
-                  blockSize - 2,
-                  "grey"
-                );
+              if (gameArray[i][j] === 0) {
+                drawBlock(i, j, blockSize, "grey");
+              } else if (gameArray[i][j] === "b") {
+                drawBlock(i, j, blockSize, "blue");
+              } else if (gameArray[i][j] === "d") {
+                drawBlock(i, j, blockSize, "darkOrange");
+              } else if (gameArray[i][j] === "y") {
+                drawBlock(i, j, blockSize, "yellow");
+              } else if (gameArray[i][j] === "f") {
+                drawBlock(i, j, blockSize, "forestGreen");
+              } else if (gameArray[i][j] === "r") {
+                drawBlock(i, j, blockSize, "red");
+              } else if (gameArray[i][j] === "a") {
+                drawBlock(i, j, blockSize, "aqua");
               }
             }
           }
-          position = [position[0] + 1, position[1]];
         }
-      }
+        function drawBlock(x, y, size, color) {
+          ctx.fillStyle = color;
+          ctx.fillRect(y * size, x * size, size, size);
+          ctx.lineWidth = 0.2;
+          ctx.strokeRect(y * blockSize, x * blockSize, blockSize, blockSize);
+        }
+        var colors = [
+          "blue",
+          "red",
+          "yellow",
+          "darkOrange",
+          "forestGreen",
+          "aqua",
+        ];
 
-      function gameLoop() {
-        updateGame();
+        function checkRowsFull() {
+          let rowsToClear = [];
+          for (var i = 0; i < cols; i++) {
+            // todo, optimize, break at first 0
+            gameArray[i].includes(0) ? null : rowsToClear.push(i);
+          }
+          return rowsToClear;
+        }
+        function clearRow(rowIndex) {
+          for (var i = 0; i < 10; i++) {
+            gameArray[rowIndex][i] = 0;
+          }
+          clearBoard();
+        }
+
+        function delRows(rowsToClear) {
+          // draw fullrows grey
+          rowsLen = rowsToClear.length;
+          for (var i = 0; i < rowsLen; i++) {
+            clearRow(rowsToClear[i]);
+          }
+
+          for (var i = rowsLen - 1; i >= 0; i--) {
+            gameArray.splice(rowsToClear[i], 1);
+            //gameArray.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+          }
+          for (var i = 0; i < rowsLen; i++) {
+            gameArray.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+          }
+          score += rowsLen;
+          console.log("score", score);
+          // TODO update score to windnow
+          clearBoard();
+        }
+
+        class Piece {
+          constructor() {
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.checkKey = function (e) {
+              e = e || window.event;
+              //console.log("e.keyCode", e.keyCode);
+              switch (e.keyCode) {
+                case 37:
+                  this.moveLeft();
+                  break;
+                case 39:
+                  this.moveRight();
+                  break;
+                case 38:
+                  this.rotate();
+                  break;
+                case 40:
+                  this.moveDown();
+                  break;
+                case 32:
+                  console.log("todo placeBlock()/dropBlock()");
+                  this.placeBlock();
+                  break;
+              }
+            };
+            this.keyDownHandler = this.checkKey.bind(this);
+            window.addEventListener("keydown", this.keyDownHandler);
+          }
+
+          kill() {
+            this.draw();
+            this.alive = false;
+
+            for (var i = 0; i < 4; i++) {
+              for (var j = 0; j < 4; j++) {
+                // draw piece cells === 1
+                if (this.array[this.currentRotation][i][j] !== 0) {
+                  gameArray[this.position[0] + i][
+                    this.position[1] + j
+                  ] = this.color[0];
+                  drawBlock(
+                    this.position[0] + i,
+                    this.position[1] + j,
+                    40,
+                    this.color
+                  );
+                }
+              }
+            }
+            delRows(checkRowsFull());
+            console.log("piece killed()");
+            window.removeEventListener("keydown", this.keyDownHandler);
+
+            console.log("piece.position", piece.position);
+            console.log("startPosition", startPosition);
+            piece.position = startPosition;
+            piece = spawnPiece();
+          }
+
+          draw() {
+            for (var i = 0; i < 4; i++) {
+              for (var j = 0; j < 4; j++) {
+                // draw piece cells === 1
+                if (this.array[this.currentRotation][i][j] !== 0) {
+                  gameArray[this.position[0] + i][this.position[1] + j] = 1;
+                  drawBlock(
+                    this.position[0] + i,
+                    this.position[1] + j,
+                    40,
+                    this.color
+                  );
+                }
+              }
+            }
+            clearBoard();
+          }
+
+          moveDown() {
+            if (this.alive) {
+              this.nullifyPiecePos();
+              let moveValid = true;
+              for (var i = 0; i < 4; i++) {
+                for (var j = 3; j >= 0; j--) {
+                  if (this.array[this.currentRotation][j][i] === 1) {
+                    /* TODO check collision works */
+
+                    try {
+                      if (
+                        gameArray[this.position[0] + j + 1][
+                          this.position[1] + i
+                        ] !== 0
+                      ) {
+                        moveValid = false;
+                        break;
+                      }
+                    } catch (err) {
+                      moveValid = false;
+                      break;
+                    }
+                    break;
+                  }
+                }
+              }
+              moveValid ? (this.position[0]++, this.draw()) : this.kill();
+            }
+
+            //this.position[0]++, this.checkMoveOverSide(), this.draw();
+            // TODO check if piece go under board OR collision, kill() piece
+          }
+          nullifyPiecePos() {
+            for (var i = 0; i < 4; i++) {
+              for (var j = 0; j < 4; j++) {
+                if (this.array[this.currentRotation][i][j] === 1) {
+                  gameArray[this.position[0] + i][this.position[1] + j] = 0;
+                }
+              }
+            }
+          }
+
+          moveLeft() {
+            if (this.alive) {
+              let moveValid = true;
+              for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                  if (this.array[this.currentRotation][i][j] === 1) {
+                    if (
+                      gameArray[this.position[0] + i][
+                        this.position[1] + j - 1
+                      ] !== 0 ||
+                      gameArray[this.position[0] + i][
+                        this.position[1] + j - 1
+                      ] === undefined
+                    ) {
+                      moveValid = false;
+                      break;
+                    }
+                    break;
+                  }
+                }
+              }
+              moveValid
+                ? (this.nullifyPiecePos(), this.position[1]--, this.draw())
+                : null;
+            }
+          }
+
+          moveRight() {
+            if (this.alive) {
+              let moveValid = true;
+              for (var i = 0; i < 4; i++) {
+                for (var j = 3; j > 0; j--) {
+                  if (this.array[this.currentRotation][i][j] === 1) {
+                    if (
+                      gameArray[this.position[0] + i][
+                        this.position[1] + j + 1
+                      ] !== 0 ||
+                      gameArray[this.position[0] + i][
+                        this.position[1] + j + 1
+                      ] === undefined
+                    ) {
+                      moveValid = false;
+                      break;
+                    }
+                    break;
+                  }
+                }
+              }
+              //console.log("moveValid", moveValid);
+
+              moveValid
+                ? (this.nullifyPiecePos(), this.position[1]++, this.draw())
+                : null;
+            }
+          }
+
+          rotate() {
+            if (this.alive) {
+              this.nullifyPiecePos();
+
+              let rotationValid = true;
+
+              let newRotation =
+                this.currentRotation < this.rotations
+                  ? this.currentRotation + 1
+                  : 0;
+
+              let newRotationArray = [...this.array[newRotation]];
+              for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                  if (newRotationArray[i][j] === 1) {
+                    try {
+                      // TODO if undefined -> overboard -> move left/right, to enable rotation next to wall
+                      if (
+                        gameArray[this.position[0] + i][
+                          this.position[1] + j
+                        ] !== 0 ||
+                        gameArray[this.position[0] + i][
+                          this.position[1] + j
+                        ] === undefined
+                      ) {
+                        rotationValid = false;
+                      }
+                    } catch (err) {
+                      rotationValid = false;
+                    }
+                  }
+                }
+              }
+
+              // TODO rotate next to block or wall, move() away from wall, if no adjasing blocks === 1 or undefined
+              rotationValid
+                ? ((this.currentRotation = newRotation), this.draw())
+                : null;
+            }
+          }
+          /* if (this.currentRotation < this.rotations) {
+                         this.currentRotation++;
+                       } else {
+                         this.currentRotation = 0;
+                       }
+                       //this.checkCollision();
+                       this.checkMoveOverSide();
+                       this.draw();
+                     }
+                   }*/
+        }
+        class Zpiece extends Piece {
+          constructor() {
+            super();
+            this.alive = true;
+            this.previousPos = [];
+            this.position = startPosition;
+            this.nextPos = [];
+            this.array = [
+              [
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [1, 1, 0, 0],
+                [0, 1, 1, 0],
+              ],
+              [
+                [0, 0, 0, 0],
+                [0, 1, 0, 0],
+                [1, 1, 0, 0],
+                [1, 0, 0, 0],
+              ],
+            ];
+            this.rotations = this.array.length - 1;
+            this.currentRotation = 0;
+          }
+        }
+        class Ipiece extends Piece {
+          constructor(position) {
+            super();
+            this.alive = true;
+            this.position = position;
+            this.array = [
+              [
+                [0, 0, 0, 0],
+                [1, 1, 1, 1],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+              ],
+              [
+                [0, 0, 1, 0],
+                [0, 0, 1, 0],
+                [0, 0, 1, 0],
+                [0, 0, 1, 0],
+              ],
+            ];
+            this.rotations = this.array.length - 1;
+            this.currentRotation = 0;
+          }
+        }
+        class Bpiece extends Piece {
+          constructor(position) {
+            super();
+            this.alive = true;
+            this.position = position;
+            this.array = [
+              [
+                [0, 0, 0, 0],
+                [0, 1, 1, 0],
+                [0, 1, 1, 0],
+                [0, 0, 0, 0],
+              ],
+            ];
+            this.rotations = this.array.length - 1;
+            this.currentRotation = 0;
+          }
+        }
+        const pieces = [Ipiece, Bpiece, Zpiece];
+
+        function spawnPiece() {
+          // TODO random piece
+          var randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
+          var p = new randomPiece(startPosition);
+
+          return p;
+        }
+
+        var piece = spawnPiece();
+
+        setInterval(() => {
+          piece.moveDown();
+        }, 1500);
       }
-      setInterval(() => {
-        gameLoop();
-      }, 2000);
+      game();
+
+      //var startPosition = [0, 0];
+      /* var i1 = new Ipiece([18, 6]);
+      i1.draw();
+      i1.kill();
+      var l1 = new Ipiece([18, 0]);
+      l1.draw();
+      l1.kill();
+      var b1 = new Zpiece([16, 3]);
+      b1.draw(); */
+      /* var l3 = new Ipiece([5, 0]);
+           var l4 = new Ipiece([5, 4]);
+           l3.draw();
+           l3.kill();
+           l4.draw();
+           l4.kill();
+      */
+      //var z = new Zpiece();
+      //z.draw();
+
+      /* function game() {
+        var piece = spawnPiece();
+
+        setInterval(() => {
+          piece.moveDown();
+          console.log("GL");
+        }, 1500);
+      }
+      game(); */
+      /* function gameLoop() {
+        var dict = checkNeighbourDoa(arr);
+        var newArr = updateGameArray(dict);
+        updateGame(newArr);
+        arr = newArr;
+      }
+      var game = {
+        start: function () {
+          if (arr.length == 0) {
+            initGameArr(matrixSize);
+          }
+          this.interval = setInterval(gameLoop, 1000);
+        },
+        stop: function () {
+          clearInterval(this.interval);
+        },
+        reset: function () {
+          this.stop();
+          initGameArr(matrixSize);
+        },
+      }; */
     </script>
   </body>
 </html>
