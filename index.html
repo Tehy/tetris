@@ -13,6 +13,7 @@
     </style>
   </head>
   <body>
+    <p id="score">SCORE: 0</p>
     <!-- 20x10 play area blocks -->
     <canvas
       id="canvas"
@@ -119,7 +120,8 @@
           gameArray.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
         }
         score += rowsLen;
-        console.log("score", score);
+        updateScore();
+        //console.log("score", score);
         // TODO update score to windnow
         clearBoard();
       }
@@ -486,6 +488,41 @@
           this.currentRotation = randomRotation(this.rotations);
         }
       }
+      class Epiece extends Piece {
+        constructor(position) {
+          super();
+          this.alive = true;
+          this.position = position;
+          this.array = [
+            [
+              [0, 0, 0, 0],
+              [0, 1, 0, 0],
+              [1, 1, 1, 0],
+              [0, 0, 0, 0],
+            ],
+            [
+              [0, 0, 0, 0],
+              [0, 1, 0, 0],
+              [1, 1, 0, 0],
+              [0, 1, 0, 0],
+            ],
+            [
+              [0, 0, 0, 0],
+              [0, 0, 0, 0],
+              [1, 1, 1, 0],
+              [0, 1, 0, 0],
+            ],
+            [
+              [0, 0, 0, 0],
+              [0, 1, 0, 0],
+              [0, 1, 1, 0],
+              [0, 1, 0, 0],
+            ],
+          ];
+          this.rotations = this.array.length - 1;
+          this.currentRotation = randomRotation(this.rotations);
+        }
+      }
       class Bpiece extends Piece {
         constructor(position) {
           super();
@@ -503,7 +540,15 @@
           this.currentRotation = randomRotation(this.rotations);
         }
       }
-      const pieces = [Ipiece, Bpiece, Zpiece1, Zpiece2, Lpiece1, Lpiece2];
+      const pieces = [
+        Ipiece,
+        Bpiece,
+        Zpiece1,
+        Zpiece2,
+        Lpiece1,
+        Lpiece2,
+        Epiece,
+      ];
 
       function spawnPiece() {
         //if (piece) piece.position = [0, 3];
@@ -514,9 +559,11 @@
           for (var j = 0; j < 4; j++) {
             if (p.array[p.currentRotation][i][j] === 1) {
               if (gameArray[p.position[0] + i][p.position[1] + j] !== 0) {
-                console.log("GAMEOVER");
+                p.kill();
+                document.querySelector("#score").innerHTML = ////TODO CONTINUE HERE, this flashes at end, updateScore is run after piece.kill() overwrites this
+                  "GAME OVER! your score: " + score;
                 clearInterval(gameInterval);
-                console.log("p.position", p.position);
+                //console.log("p.position", p.position);
               }
             }
           }
@@ -558,6 +605,9 @@
         piece = spawnPiece();
         piece.draw();
         startInterval();
+      }
+      function updateScore() {
+        document.querySelector("#score").innerHTML = "SCORE: " + score;
       }
 
       function restart() {
