@@ -23,11 +23,15 @@
       }
       canvas {
       }
+      #restart {
+        display: none;
+      }
     </style>
   </head>
   <body>
     <h1>TETRIS</h1>
     <p id="score">SCORE: 0</p>
+    <button id="restart" onclick="restart()">RESTART</button>
     <!-- 20x10 play area blocks -->
     <canvas
       id="canvas"
@@ -576,7 +580,7 @@
               if (gameArray[p.position[0] + i][p.position[1] + j] !== 0) {
                 p.kill();
                 document.querySelector("#score").innerHTML =
-                  "GAME OVER! YOUR SCORE " + score;
+                  "GAME OVER! SCORE " + score;
                 clearInterval(gameInterval);
                 //console.log("p.position", p.position);
               }
@@ -626,9 +630,12 @@
       }
 
       function restart() {
+        document.querySelector("#restart").style.display = "block";
         stopInterval();
+
         score = 0;
         paused = false;
+        document.querySelector("#score").innerHTML = "SCORE: " + score;
         initGameArr();
         piece = spawnPiece();
         piece.draw();
