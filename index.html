@@ -65,8 +65,8 @@
     <!-- 20x10 play area blocks -->
     <canvas
       id="canvas"
-      width="400"
-      height="800"
+      width="350"
+      height="700"
       style="border: 0.2px solid grey;"
     ></canvas>
 
@@ -79,11 +79,8 @@
       const rows = 10; //game rows
       const cols = 20; //game columns
       var gameArray = [];
+
       const blockSize = width / 10;
-
-      //const gameBlockSize = 4; // correct?
-
-      const startPosition = [0, 3];
 
       var score = 0;
 
@@ -126,7 +123,7 @@
       }
       function drawBlock(x, y, size, color) {
         ctx.fillStyle = color;
-        ctx.fillRect(y * size, x * size, size, size);
+        ctx.fillRect(y * blockSize, x * blockSize, blockSize, blockSize);
         ctx.lineWidth = 0.2;
         ctx.strokeRect(y * blockSize, x * blockSize, blockSize, blockSize);
       }
@@ -222,7 +219,7 @@
                 drawBlock(
                   this.position[0] + i,
                   this.position[1] + j,
-                  40,
+                  blockSize,
                   this.color
                 );
               }
@@ -251,7 +248,7 @@
                   drawBlock(
                     this.position[0] + i,
                     this.position[1] + j,
-                    40,
+                    blockSize,
                     this.color
                   );
                 }
