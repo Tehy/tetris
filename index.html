@@ -18,14 +18,14 @@
         color: whitesmoke;
       }
       p {
-        font-size: large;
+        font-size: x-large;
       }
       canvas {
       }
     </style>
   </head>
   <body>
-    <h1>Tetris</h1>
+    <h1>TETRIS</h1>
     <p id="score">SCORE: 0</p>
     <!-- 20x10 play area blocks -->
     <canvas
@@ -575,7 +575,7 @@
               if (gameArray[p.position[0] + i][p.position[1] + j] !== 0) {
                 p.kill();
                 document.querySelector("#score").innerHTML =
-                  "GAME OVER! your score: " + score;
+                  "GAME OVER! YOUR SCORE " + score;
                 clearInterval(gameInterval);
                 //console.log("p.position", p.position);
               }
