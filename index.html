@@ -24,14 +24,35 @@
       canvas {
       }
       #restart {
-        display: none;
+        margin: auto;
+
+        animation: blinkingText 1.2s infinite;
+      }
+      @keyframes blinkingText {
+        0% {
+          color: whitesmoke;
+        }
+        49% {
+          color: whitesmoke;
+        }
+        60% {
+          color: transparent;
+        }
+        99% {
+          color: transparent;
+        }
+        100% {
+          color: whitesmoke;
+        }
       }
     </style>
   </head>
   <body>
     <h1>TETRIS</h1>
     <p id="score">SCORE: 0</p>
-    <button id="restart" onclick="restart()">RESTART</button>
+    <p style="display: none;" id="restart" onclick="restart()">
+      RESTART!
+    </p>
     <!-- 20x10 play area blocks -->
     <canvas
       id="canvas"
@@ -579,6 +600,7 @@
             if (p.array[p.currentRotation][i][j] === 1) {
               if (gameArray[p.position[0] + i][p.position[1] + j] !== 0) {
                 p.kill();
+                document.querySelector("#restart").style.display = "block";
                 document.querySelector("#score").innerHTML =
                   "GAME OVER! SCORE " + score;
                 clearInterval(gameInterval);
@@ -630,7 +652,7 @@
       }
 
       function restart() {
-        document.querySelector("#restart").style.display = "block";
+        document.querySelector("#restart").style.display = "none";
         stopInterval();
 
         score = 0;
