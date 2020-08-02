@@ -24,7 +24,7 @@
       p {
         margin-top: 35px;
         margin-bottom: 45px;
-        font-size: large;
+        font-size: x-large;
       }
 
       canvas {
@@ -58,7 +58,7 @@
   </head>
   <body>
     <h1>TETRIS</h1>
-    <p id="score">SCORE: 0</p>
+    <p id="score">SCORE 0</p>
     <span style="display: none;" id="restart" onclick="restart()">
       RESTART!
     </span>
@@ -655,7 +655,7 @@
         startInterval();
       }
       function updateScore() {
-        document.querySelector("#score").innerHTML = "SCORE: " + score;
+        document.querySelector("#score").innerHTML = "SCORE " + score;
       }
 
       function restart() {
@@ -664,7 +664,7 @@
 
         score = 0;
         paused = false;
-        document.querySelector("#score").innerHTML = "SCORE: " + score;
+        document.querySelector("#score").innerHTML = "SCORE " + score;
         initGameArr();
         piece = spawnPiece();
         piece.draw();
