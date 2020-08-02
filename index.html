@@ -13,19 +13,29 @@
         font-style: normal;
       }
       body {
+        padding: 15px;
+        position: relative;
         text-shadow: 1px 1px rgb(27, 27, 27);
         font-family: "arcadeclassicregular";
         text-align: center;
         color: whitesmoke;
       }
-      p {
-        font-size: x-large;
+      h1 {
       }
+      p {
+        margin-top: 35px;
+        margin-bottom: 45px;
+        font-size: large;
+      }
+
       canvas {
       }
       #restart {
+        left: 44%;
+        top: 140px;
+        position: absolute;
         margin: auto;
-
+        cursor: pointer;
         animation: blinkingText 1.2s infinite;
       }
       @keyframes blinkingText {
@@ -50,9 +60,9 @@
   <body>
     <h1>TETRIS</h1>
     <p id="score">SCORE: 0</p>
-    <p style="display: none;" id="restart" onclick="restart()">
+    <span style="display: none;" id="restart" onclick="restart()">
       RESTART!
-    </p>
+    </span>
     <!-- 20x10 play area blocks -->
     <canvas
       id="canvas"
@@ -600,7 +610,8 @@
             if (p.array[p.currentRotation][i][j] === 1) {
               if (gameArray[p.position[0] + i][p.position[1] + j] !== 0) {
                 p.kill();
-                document.querySelector("#restart").style.display = "block";
+                document.querySelector("#restart").style.display =
+                  "inline-block";
                 document.querySelector("#score").innerHTML =
                   "GAME OVER! SCORE " + score;
                 clearInterval(gameInterval);
