@@ -18,6 +18,7 @@
         text-align: center;
         color: whitesmoke;
       }
+
       h1 {
         margin-top: 0;
       }
@@ -26,10 +27,14 @@
         margin-bottom: 25px;
         font-size: x-large;
       }
+      #header {
+        display: inline-block;
+        position: relative;
+      }
 
       #restart-button {
-        font-size: large;
         font-family: inherit;
+
         background-color: transparent;
         border: none;
         margin: auto;
@@ -55,6 +60,27 @@
           color: whitesmoke;
         }
       }
+      /* info */
+      #info-button {
+        position: absolute;
+        top: 0;
+
+        left: 10px;
+      }
+      #info {
+        background-color: rgb(0, 55, 128);
+        border: black 2px solid;
+        border-radius: 15px;
+        padding: 10px;
+        color: whitesmoke;
+        position: fixed;
+        position: fixed;
+        left: 50%;
+        transform: translate(-50%, 0);
+        width: 300px;
+        margin: auto;
+      }
+
       /* mobile controls */
       button:focus {
         outline: 0;
@@ -104,7 +130,20 @@
     </style>
   </head>
   <body>
-    <h1>TETRIS</h1>
+    <div id="header">
+      <h1>
+        TETRIS
+      </h1>
+      <button id="info-button" onclick="showInfo()">
+        i
+      </button>
+      <div id="info" onclick="hideInfo()">
+        Use arrow keys to control movement<br />Mobile controls below
+        gameboard<br />
+        Difficulty increase every +5 score<br /><br />- Click to hide info -
+      </div>
+    </div>
+
     <p id="score">SCORE 0</p>
     <button style="display: none;" id="restart-button" onclick="restartGame()">
       RESTART!
@@ -135,6 +174,14 @@
         }
       }
       showMobileControls();
+      function showInfo() {
+        console.log("SHOW info");
+        document.querySelector("#info").style.display = "block";
+      }
+      function hideInfo() {
+        console.log("HIDE info");
+        document.querySelector("#info").style.display = "none";
+      }
 
       // canvas
       const c = document.getElementById("canvas");
@@ -148,6 +195,7 @@
       var gameArray = []; // game array / board
       const blockSize = width / 10;
       var score = 0;
+      var gameSpeed = 500;
 
       function initGameArr() {
         // draw canvas
@@ -234,6 +282,7 @@
           score += rowsLen;
           updateScore();
           clearBoard();
+          updateGameSpeed();
         }
       }
       // Game Piece class
@@ -649,7 +698,10 @@
       function spawnPiece() {
         var randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
         // TODO check which piece, assign better spawn point for each piece
-        var p = new randomPiece([0, 3]);
+        randomPiece === Ipiece
+          ? (p = new randomPiece([0, 3]))
+          : (p = new randomPiece([-1, 3]));
+
         //check if piece spawns ontop of other piece
         for (var i = 0; i < 4; i++) {
           for (var j = 0; j < 4; j++) {
@@ -666,6 +718,7 @@
             }
           }
         }
+        p.draw();
         return p;
       }
       function stopInterval() {
@@ -675,8 +728,8 @@
         gameInterval = setInterval(() => {
           piece !== undefined && piece.alive
             ? piece.moveDown()
-            : ((piece.position = [0, 3]), (piece = spawnPiece()));
-        }, 500);
+            : (piece = spawnPiece());
+        }, gameSpeed);
       }
 
       // init game
@@ -687,8 +740,41 @@
       var gameInterval = setInterval(() => {
         piece !== undefined && piece.alive
           ? piece.moveDown()
-          : ((piece.position = [0, 3]), (piece = spawnPiece()));
-      }, 500);
+          : (piece = spawnPiece());
+      }, gameSpeed);
+
+      // update score to window
+      function updateScore() {
+        document.querySelector("#score").innerHTML = "SCORE " + score;
+      }
+
+      // restart-button onclick function, restarts game after game end
+      function restartGame() {
+        document.querySelector("#restart-button").style.display = "none";
+        score = 0;
+        paused = false;
+        document.querySelector("#score").innerHTML = "SCORE " + score;
+        initGameArr();
+        piece = spawnPiece();
+        piece.draw();
+        startInterval();
+      }
+
+      function updateGameSpeed() {
+        if (score >= 5 && score < 10) {
+          stopInterval();
+          gameSpeed = 400;
+          startInterval();
+        } else if (score >= 10 && score < 15) {
+          stopInterval();
+          gameSpeed = 300;
+          startInterval();
+        } else if (score >= 15 && score < 20) {
+          stopInterval();
+          gameSpeed = 200;
+          startInterval();
+        }
+      }
 
       // pause not implemented
       var paused = false;
@@ -701,23 +787,6 @@
       function start() {
         score = 0;
         paused = false;
-        initGameArr();
-        piece = spawnPiece();
-        piece.draw();
-        startInterval();
-      }
-
-      // update score to window
-      function updateScore() {
-        document.querySelector("#score").innerHTML = "SCORE " + score;
-      }
-
-      // restart-button onclick restarts game after game end
-      function restartGame() {
-        document.querySelector("#restart-button").style.display = "none";
-        score = 0;
-        paused = false;
-        document.querySelector("#score").innerHTML = "SCORE " + score;
         initGameArr();
         piece = spawnPiece();
         piece.draw();
