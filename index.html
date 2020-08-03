@@ -203,6 +203,7 @@
       var gameArray = []; // game array / board
       const blockSize = width / 10;
       var score = 0;
+
       var gameSpeed = 500;
 
       function initGameArr() {
@@ -760,6 +761,7 @@
       function restartGame() {
         document.querySelector("#restart-button").style.display = "none";
         score = 0;
+        updateGameSpeed();
         paused = false;
         document.querySelector("#score").innerHTML = "SCORE " + score;
         initGameArr();
