@@ -29,7 +29,48 @@
 
       canvas {
       }
-      #restart {
+      #mobile-buttons-div {
+        user-select: none;
+        display: none;
+        margin: auto;
+        width: 300px;
+      }
+
+      :root {
+        --mobile-controls-size: 45px;
+      }
+
+      .arrow {
+        height: 15px;
+        width: 15px;
+        border: solid whitesmoke;
+        margin: 10px;
+        border-width: 0 5px 5px 0;
+        display: inline-block;
+        padding: 3px;
+      }
+
+      .right {
+        transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+      }
+
+      .left {
+        transform: rotate(135deg);
+        -webkit-transform: rotate(135deg);
+      }
+
+      .rotate {
+        border-width: 5px 5px 5px 5px;
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+      }
+
+      .down {
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+      }
+      #restart-button {
         margin: auto;
         margin-bottom: -12px;
         transform: translateY(-16px);
@@ -53,12 +94,22 @@
           color: whitesmoke;
         }
       }
+      .spacer {
+        display: inline-block;
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+      .spacer-small {
+        display: inline-block;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
     </style>
   </head>
   <body>
     <h1>TETRIS</h1>
     <p id="score">SCORE 0</p>
-    <span style="display: none;" id="restart" onclick="restart()">
+    <span style="display: none;" id="restart-button" onclick="restart()">
       RESTART!
     </span>
     <!-- 20x10 play area blocks -->
@@ -68,9 +119,27 @@
       height="600"
       style="border: 0.2px solid grey;"
     ></canvas>
+    <div id="mobile-buttons-div">
+      <div class="arrow rotate" onclick="piece.rotate()"></div>
+      <div class="spacer-small"></div>
+      <div class="arrow down" onclick="piece.moveDown()"></div>
+      <div class="spacer"></div>
+      <div class="arrow left" onclick="piece.moveLeft()"></div>
+      <div class="spacer-small"></div>
+      <div class="arrow right" onclick="piece.moveRight()"></div>
+    </div>
 
     <!-- TODO make canvas smaller , drawblock dynamic to width &heigth -->
     <script>
+      function showMobileControls() {
+        var ua = navigator.userAgent;
+        var isMobile = /Android|webOS|iPhone|iPad|iPod/i.test(ua);
+        if (isMobile) {
+          document.querySelector("#mobile-buttons-div").style.display = "block";
+        }
+      }
+      showMobileControls();
+
       const c = document.getElementById("canvas");
       const ctx = c.getContext("2d");
       const width = canvas.width;
@@ -605,7 +674,8 @@
             if (p.array[p.currentRotation][i][j] === 1) {
               if (gameArray[p.position[0] + i][p.position[1] + j] !== 0) {
                 p.kill();
-                document.querySelector("#restart").style.display = "block";
+                document.querySelector("#restart-button").style.display =
+                  "block";
                 document.querySelector("#score").innerHTML =
                   "GAME OVER! SCORE " + score;
                 clearInterval(gameInterval);
@@ -656,8 +726,8 @@
         document.querySelector("#score").innerHTML = "SCORE " + score;
       }
 
-      function restart() {
-        document.querySelector("#restart").style.display = "none";
+      function restartGame() {
+        document.querySelector("#restart-button").style.display = "none";
         stopInterval();
 
         score = 0;
