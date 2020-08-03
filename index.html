@@ -27,59 +27,14 @@
         font-size: x-large;
       }
 
-      canvas {
-      }
-      #mobile-buttons-div {
-        user-select: none;
-        display: none;
-        margin: auto;
-        width: 300px;
-      }
-
-      :root {
-        --mobile-controls-size: 45px;
-      }
-
-      .arrow {
-        height: 15px;
-        width: 15px;
-        border: solid whitesmoke;
-        margin: 10px;
-        border-width: 0 5px 5px 0;
-        display: inline-block;
-        padding: 3px;
-      }
-
-      .right {
-        transform: rotate(-45deg);
-        -webkit-transform: rotate(-45deg);
-      }
-
-      .left {
-        transform: rotate(135deg);
-        -webkit-transform: rotate(135deg);
-      }
-
-      .rotate {
-        border-width: 5px 5px 5px 5px;
-        transform: rotate(45deg);
-        -webkit-transform: rotate(45deg);
-      }
-
-      .down {
-        transform: rotate(45deg);
-        -webkit-transform: rotate(45deg);
-      }
-      button:focus {
-        outline: 0;
-      }
       #restart-button {
+        font-size: large;
         font-family: inherit;
         background-color: transparent;
         border: none;
         margin: auto;
-        margin-bottom: -12px;
-        transform: translateY(-16px);
+        margin-bottom: -19px;
+        transform: translateY(-19px);
         cursor: pointer;
         animation: blinkingText 1.2s infinite;
       }
@@ -99,6 +54,42 @@
         100% {
           color: whitesmoke;
         }
+      }
+      /* mobile controls */
+      button:focus {
+        outline: 0;
+      }
+      #mobile-buttons-div {
+        user-select: none;
+        display: none;
+        margin: auto;
+        width: 300px;
+      }
+      .arrow {
+        height: 15px;
+        width: 15px;
+        border: solid whitesmoke;
+        margin: 10px;
+        border-width: 0 5px 5px 0;
+        display: inline-block;
+        padding: 3px;
+      }
+      .right {
+        transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+      }
+      .left {
+        transform: rotate(135deg);
+        -webkit-transform: rotate(135deg);
+      }
+      .rotate {
+        border-width: 5px 5px 5px 5px;
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+      }
+      .down {
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
       }
       .spacer {
         display: inline-block;
@@ -135,7 +126,6 @@
       <div class="arrow right" onclick="piece.moveRight()"></div>
     </div>
 
-    <!-- TODO make canvas smaller , drawblock dynamic to width &heigth -->
     <script>
       function showMobileControls() {
         var ua = navigator.userAgent;
@@ -146,27 +136,30 @@
       }
       showMobileControls();
 
+      // canvas
       const c = document.getElementById("canvas");
       const ctx = c.getContext("2d");
       const width = canvas.width;
       const height = canvas.height;
-      const rows = 10; //game rows
-      const cols = 20; //game columns
-      var gameArray = [];
 
+      // game
+      const rows = 10; // game rows
+      const cols = 20; // game columns
+      var gameArray = []; // game array / board
       const blockSize = width / 10;
-
       var score = 0;
 
       function initGameArr() {
-        //fill game matrix array and draw rect to canvas
+        // draw canvas
         ctx.fillStyle = "grey";
         ctx.fillRect(0, 0, width, height);
         for (var i = 0; i < cols; i++) {
           gameArray[i] = [];
           for (var j = 0; j < rows; j++) {
+            // fill game array with 0's
             gameArray[i][j] = 0;
             ctx.lineWidth = 0.2;
+            // draw rectangle outlines / borders
             ctx.strokeRect(j * blockSize, i * blockSize, blockSize, blockSize);
           }
         }
@@ -174,7 +167,7 @@
       initGameArr();
 
       function clearBoard() {
-        //initGameArr();
+        // draws game array with corresponding value / color
         for (var i = 0; i < cols; i++) {
           for (var j = 0; j < rows; j++) {
             if (gameArray[i][j] === 0) {
@@ -211,6 +204,7 @@
       ];
 
       function checkRowsFull() {
+        // check if any row is full, return list of row indexes to be removed
         let rowsToClear = [];
         for (var i = 0; i < cols; i++) {
           // todo, optimize, break at first 0
@@ -219,39 +213,41 @@
         return rowsToClear;
       }
       function clearRow(rowIndex) {
+        // set game array row values to 0
         for (var i = 0; i < 10; i++) {
           gameArray[rowIndex][i] = 0;
         }
-        clearBoard();
       }
 
       function delRows(rowsToClear) {
-        // draw fullrows grey
+        // deletes full rows from game array
         rowsLen = rowsToClear.length;
+
+        /* 
         for (var i = 0; i < rowsLen; i++) {
           clearRow(rowsToClear[i]);
-        }
+        } 
+        */
 
+        // remove full row from game array
         for (var i = rowsLen - 1; i >= 0; i--) {
           gameArray.splice(rowsToClear[i], 1);
-          //gameArray.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
         }
+        // add new row to game array
         for (var i = 0; i < rowsLen; i++) {
           gameArray.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
         }
         score += rowsLen;
         updateScore();
-        //console.log("score", score);
-        // TODO update score to windnow
         clearBoard();
       }
-
+      // Game Piece class
+      // contains most of logic
       class Piece {
         constructor() {
           this.color = colors[Math.floor(Math.random() * colors.length)];
           this.checkKey = function (e) {
             e = e || window.event;
-            //console.log("e.keyCode", e.keyCode);
             switch (e.keyCode) {
               case 37:
                 this.moveLeft();
@@ -265,10 +261,11 @@
               case 40:
                 this.moveDown();
                 break;
-              case 32:
-                console.log("todo placeBlock()/dropBlock()");
-                this.placeBlock();
-                break;
+              /* case 32:
+                // TODO drop block
+                //console.log("todo placeBlock()/dropBlock()");
+                //this.placeBlock();
+                break; */
             }
           };
           this.keyDownHandler = this.checkKey.bind(this);
@@ -276,16 +273,13 @@
         }
 
         kill() {
-          //this.draw();
-
           window.removeEventListener("keydown", this.keyDownHandler);
           this.alive = false;
 
-          //console.log("piece killed()");
-
           for (var i = 0; i < 4; i++) {
             for (var j = 0; j < 4; j++) {
-              // draw piece cells === 1
+              // sets game array value to the first character of piece color
+              // draws piece
               if (this.array[this.currentRotation][i][j] !== 0) {
                 gameArray[this.position[0] + i][
                   this.position[1] + j
@@ -299,23 +293,15 @@
               }
             }
           }
-          this.position = [0, 3];
+          //check if rows are full
           delRows(checkRowsFull());
-
-          //console.log("this.position", this.position);
-          //console.log("startPosition", startPosition);
-
-          //stopInterval();
-          //delete this.Piece;
-          //var piece = spawnPiece();
-          //var gameInterval = startInterval();
-          //console.log("piece", piece);
         }
 
         draw() {
           if (this.alive === true) {
             for (var i = 0; i < 4; i++) {
               for (var j = 0; j < 4; j++) {
+                // update piece position to game array
                 // draw piece cells === 1
                 if (this.array[this.currentRotation][i][j] !== 0) {
                   gameArray[this.position[0] + i][this.position[1] + j] = 1;
@@ -328,10 +314,25 @@
                 }
               }
             }
+            // clear previous position draws
             clearBoard();
           }
         }
-
+        // Move logic with collision checks
+        // ex. piece.move()
+        // -> nullify current game array position
+        // -> check if move position is valid
+        // -> valid, update position, draw
+        // -> invalid, null
+        nullifyPiecePos() {
+          for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
+              if (this.array[this.currentRotation][i][j] === 1) {
+                gameArray[this.position[0] + i][this.position[1] + j] = 0;
+              }
+            }
+          }
+        }
         moveDown() {
           if (this.alive) {
             this.nullifyPiecePos();
@@ -339,8 +340,6 @@
             for (var i = 0; i < 4; i++) {
               for (var j = 3; j >= 0; j--) {
                 if (this.array[this.currentRotation][j][i] === 1) {
-                  /* TODO check collision works */
-
                   try {
                     if (
                       gameArray[this.position[0] + j + 1][
@@ -361,16 +360,6 @@
             moveValid ? (this.position[0]++, this.draw()) : this.kill();
           }
         }
-        nullifyPiecePos() {
-          for (var i = 0; i < 4; i++) {
-            for (var j = 0; j < 4; j++) {
-              if (this.array[this.currentRotation][i][j] === 1) {
-                gameArray[this.position[0] + i][this.position[1] + j] = 0;
-              }
-            }
-          }
-        }
-
         moveLeft() {
           if (this.alive) {
             let moveValid = true;
@@ -397,7 +386,6 @@
               : null;
           }
         }
-
         moveRight() {
           if (this.alive) {
             let moveValid = true;
@@ -419,8 +407,6 @@
                 }
               }
             }
-            //console.log("moveValid", moveValid);
-
             moveValid
               ? (this.nullifyPiecePos(), this.position[1]++, this.draw())
               : null;
@@ -430,20 +416,16 @@
         rotate() {
           if (this.alive) {
             this.nullifyPiecePos();
-
             let rotationValid = true;
-
             let newRotation =
               this.currentRotation < this.rotations
                 ? this.currentRotation + 1
                 : 0;
-
             let newRotationArray = [...this.array[newRotation]];
             for (var i = 0; i < 4; i++) {
               for (var j = 0; j < 4; j++) {
                 if (newRotationArray[i][j] === 1) {
                   try {
-                    // TODO if undefined -> overboard -> move left/right, to enable rotation next to wall
                     if (
                       gameArray[this.position[0] + i][this.position[1] + j] !==
                         0 ||
@@ -458,14 +440,13 @@
                 }
               }
             }
-
-            // TODO rotate next to block or wall, move() away from wall, if no adjasing blocks === 1 or undefined
             rotationValid
               ? ((this.currentRotation = newRotation), this.draw())
               : null;
           }
         }
       }
+      // individual pieces, child classes
       function randomRotation(rotations) {
         return Math.floor(Math.random() * Math.floor(rotations + 1));
       }
@@ -671,26 +652,25 @@
       ];
 
       function spawnPiece() {
-        //if (piece) piece.position = [0, 3];
         var randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
+        // TODO check which piece, assign better spawn point for each piece
         var p = new randomPiece([0, 3]);
         //check if piece spawns ontop of other piece
         for (var i = 0; i < 4; i++) {
           for (var j = 0; j < 4; j++) {
             if (p.array[p.currentRotation][i][j] === 1) {
               if (gameArray[p.position[0] + i][p.position[1] + j] !== 0) {
+                // end game
                 p.kill();
                 document.querySelector("#restart-button").style.display =
                   "block";
                 document.querySelector("#score").innerHTML =
                   "GAME OVER! SCORE " + score;
                 clearInterval(gameInterval);
-                //console.log("p.position", p.position);
               }
             }
           }
         }
-
         return p;
       }
       function stopInterval() {
@@ -707,19 +687,22 @@
       // init game
       piece = spawnPiece();
       piece.draw();
+
+      // main game loop
       var gameInterval = setInterval(() => {
         piece !== undefined && piece.alive
           ? piece.moveDown()
           : ((piece.position = [0, 3]), (piece = spawnPiece()));
       }, 500);
-      //clearInterval(gameInterval);
 
+      // pause not implemented
       var paused = false;
       function pause() {
         return paused
           ? ((paused = false), startInterval())
           : ((paused = true), stopInterval());
       }
+      // start not implemented
       function start() {
         score = 0;
         paused = false;
@@ -728,14 +711,15 @@
         piece.draw();
         startInterval();
       }
+
+      // update score to window
       function updateScore() {
         document.querySelector("#score").innerHTML = "SCORE " + score;
       }
 
+      // restart-button onclick restarts game after game end
       function restartGame() {
         document.querySelector("#restart-button").style.display = "none";
-        stopInterval();
-
         score = 0;
         paused = false;
         document.querySelector("#score").innerHTML = "SCORE " + score;
