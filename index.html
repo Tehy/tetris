@@ -62,19 +62,22 @@
       }
       /* info */
       #info-button {
+        font-family: inherit;
         position: absolute;
-        top: 10px;
-
+        top: 5px;
+        background-color: rgb(0, 55, 128);
+        border: solid 1px black;
+        border-radius: 5px;
         left: 115px;
       }
       #info {
+        display: none;
         font-size: large;
         background-color: rgb(0, 55, 128);
         border: black 2px solid;
         border-radius: 15px;
         padding: 10px;
         color: whitesmoke;
-        position: fixed;
         position: fixed;
         left: 50%;
         transform: translate(-50%, 0);
@@ -139,9 +142,9 @@
         i
       </button>
       <div id="info" onclick="hideInfo()">
-        Use arrow keys to control movement<br />Mobile controls below
-        gameboard<br />
-        Difficulty increase every +5 score<br /><br />- Click to hide info -
+        arrow keys to control movement<br /><br />mobile controls below
+        gameboard<br /><br />
+        difficulty increases every +5 score<br /><br /><br />- click to hide -
       </div>
     </div>
 
