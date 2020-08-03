@@ -71,6 +71,8 @@
         -webkit-transform: rotate(45deg);
       }
       #restart-button {
+        background-color: transparent;
+        border: none;
         margin: auto;
         margin-bottom: -12px;
         transform: translateY(-16px);
@@ -85,10 +87,10 @@
           color: whitesmoke;
         }
         60% {
-          color: transparent;
+          color: black;
         }
         99% {
-          color: transparent;
+          color: black;
         }
         100% {
           color: whitesmoke;
@@ -109,9 +111,9 @@
   <body>
     <h1>TETRIS</h1>
     <p id="score">SCORE 0</p>
-    <span style="display: none;" id="restart-button" onclick="restart()">
+    <button style="display: none;" id="restart-button" onclick="restart()">
       RESTART!
-    </span>
+    </button>
     <!-- 20x10 play area blocks -->
     <canvas
       id="canvas"
