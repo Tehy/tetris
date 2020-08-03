@@ -222,24 +222,19 @@
       function delRows(rowsToClear) {
         // deletes full rows from game array
         rowsLen = rowsToClear.length;
-
-        /* 
-        for (var i = 0; i < rowsLen; i++) {
-          clearRow(rowsToClear[i]);
-        } 
-        */
-
-        // remove full row from game array
-        for (var i = rowsLen - 1; i >= 0; i--) {
-          gameArray.splice(rowsToClear[i], 1);
+        if (rowsLen > 0) {
+          // remove full row from game array
+          for (var i = rowsLen - 1; i >= 0; i--) {
+            gameArray.splice(rowsToClear[i], 1);
+          }
+          // add new row to game array
+          for (var i = 0; i < rowsLen; i++) {
+            gameArray.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+          }
+          score += rowsLen;
+          updateScore();
+          clearBoard();
         }
-        // add new row to game array
-        for (var i = 0; i < rowsLen; i++) {
-          gameArray.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-        }
-        score += rowsLen;
-        updateScore();
-        clearBoard();
       }
       // Game Piece class
       // contains most of logic
