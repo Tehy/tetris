@@ -203,7 +203,6 @@
       var gameArray = []; // game array / board
       const blockSize = width / 10;
       var score = 0;
-
       var gameSpeed = 500;
 
       function initGameArr() {
@@ -295,7 +294,7 @@
         }
       }
       // Game Piece class
-      // contains most of logic
+      // contains pieces logic
       class Piece {
         constructor() {
           this.color = colors[Math.floor(Math.random() * colors.length)];
@@ -373,9 +372,13 @@
         }
         // Move logic with collision checks
         // ex. piece.move()
-        // -> nullify current game array position
         // -> check if move position is valid
-        // -> valid, update position, draw
+        // -> valid, nullify current game array position, update position, draw
+        // -> invalid, null
+        // ex. piece.rotate()
+        // -> nullify current game array position
+        // -> check if next rotation is valid
+        // -> valid, update piece.currentRotation, draw
         // -> invalid, null
         nullifyPiecePos() {
           for (var i = 0; i < 4; i++) {
@@ -704,6 +707,8 @@
         Epiece,
       ];
 
+      // Game logic
+
       function spawnPiece() {
         var randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
         // TODO check which piece, assign better spawn point for each piece
@@ -761,7 +766,7 @@
       function restartGame() {
         document.querySelector("#restart-button").style.display = "none";
         score = 0;
-        updateGameSpeed();
+        gameSpeed = 500;
         paused = false;
         document.querySelector("#score").innerHTML = "SCORE " + score;
         initGameArr();
@@ -782,6 +787,14 @@
         } else if (score >= 15 && score < 20) {
           stopInterval();
           gameSpeed = 200;
+          startInterval();
+        } else if (score >= 25 && score < 30) {
+          stopInterval();
+          gameSpeed = 150;
+          startInterval();
+        } else if (score >= 35 && score < 40) {
+          stopInterval();
+          gameSpeed = 100;
           startInterval();
         }
       }
